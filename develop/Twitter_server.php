@@ -54,4 +54,6 @@ try {
   echo json_encode(["sql error" => "{$e->getMessage()}"]);
   exit();
 }
+header('Location:develop.php')
+
 ?>

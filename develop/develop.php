@@ -12,8 +12,21 @@ try{
   exit();
 }
 
+// SELECT 表示するカラム名 FROM テーブル名;
+// 「*」で全て指定
+// 複数カラム指定
+// SELECT カラム１, カラム２ FROM todo_table;
 $sql = 'SELECT * FROM Date_table';
 $stmt = $pdo->prepare($sql);
+// 「WHERE」を使用して値の条件を指定できる
+// todo_tableの*『全てのデータ』WHERE『から』deadline='2021-12-31『であるデータの読み込む』
+// SELECT * FROM todo_table WHERE deadline='2021-12-31'
+// 並び替えには ORDER BY を使用する．
+// 昇順（ASC）か降順（DESC）を指定する．
+//  `deadline`カラムの値で降順に並び替え
+// SELECT * FROM todo_table ORDER BY deadline DESC;
+// LIMITで表示件数の制限
+// SELECT * FROM todo_table LIMIT 5;
 
 try {
   $status = $stmt->execute();
@@ -32,7 +45,7 @@ echo('</pre>');
 foreach ($result as $record) {
   $output .= "
     <tr>
-      <td>{$record["A_word"]}</td>
+      <td>{$record["tweet"]}</td>
     </tr>
   ";
 }
