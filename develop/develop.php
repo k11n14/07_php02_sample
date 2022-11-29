@@ -60,8 +60,10 @@ $output = "";
 
 foreach ($result as $record) {
   $output .= "
+  <div class='Tweet_div'>
   <div>{$record["user_name"]}さん {$record["tweet"]}</div>
   <div>{$record["created_at"]}</div>
+  </div>
   ";
 }
 
@@ -74,6 +76,7 @@ foreach ($result as $record) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ツイッターアプリ</title>
+  <link rel="stylesheet" href="./css/Twitter.css">
 </head>
 <body>
   <form action="Twitter_server.php" method="POST">
