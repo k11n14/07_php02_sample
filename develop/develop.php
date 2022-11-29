@@ -16,7 +16,7 @@ try{
 // 「*」で全て指定
 // 複数カラム指定
 // SELECT カラム１, カラム２ FROM todo_table;
-$sql = 'SELECT * FROM Date_table';
+$sql = 'SELECT * FROM Date_table ORDER BY created_at DESC';
 $stmt = $pdo->prepare($sql);
 // 「WHERE」を使用して値の条件を指定できる
 // todo_tableの*『全てのデータ』WHERE『から』deadline='2021-12-31『であるデータの読み込む』
@@ -28,6 +28,7 @@ $stmt = $pdo->prepare($sql);
 // LIMITで表示件数の制限
 // SELECT * FROM todo_table LIMIT 5;
 
+// sqlが実行出来ているか確認する所。
 try {
   $status = $stmt->execute();
   // echo 'sqlOK';
@@ -35,18 +36,32 @@ try {
   echo json_encode(["sql error" => "{$e->getMessage()}"]);
   exit();
 }
+// ようわからんけど$resultの中に選択して取ってきたデータが配列っぽい形で入ってる。
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 $output = "";
 
-echo('<pre>');
-var_dump($result);
-echo('</pre>');
+// echo('<pre>');
+// var_dump($result);
+// echo('</pre>');
+
+// array(5) {
+//   [0]=>
+//   array(4) {
+//     ["id"]=>
+//     string(1) "4"
+//     ["user_name"]=>
+//     string(4) "hoge"
+//     ["tweet"]=>
+//     string(12) "ほごーと"
+//     ["created_at"]=>
+//     string(19) "2022-11-29 17:48:24"
+//   }
 
 foreach ($result as $record) {
   $output .= "
-    <tr>
-      <td>{$record["tweet"]}</td>
-    </tr>
+  <div>{$record["user_name"]}さん {$record["tweet"]}</div>
+  <div>{$record["created_at"]}</div>
   ";
 }
 
