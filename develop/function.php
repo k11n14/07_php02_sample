@@ -13,7 +13,6 @@ try{
 }
 }
 
-
 function Cheack_sql (){
 try {
   $status = $stmt->execute();
@@ -22,6 +21,19 @@ try {
   echo json_encode(["sql error" => "{$e->getMessage()}"]);
   exit();
 }
+}
+
+function tweet_preview (){
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $output = "";
+  foreach ($result as $record) {
+  $output .= "
+  <div class='Tweet_div'>
+  <div>{$record["user_name"]}さん {$record["tweet"]}</div>
+  <div>{$record["created_at"]}</div>
+  </div>
+  ";
+
 }
 
 ?>
