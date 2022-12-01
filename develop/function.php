@@ -14,7 +14,7 @@ try{
 }
 
 
- function Cheack_sql (){
+function Cheack_sql (){
 try {
   $status = $stmt->execute();
   // echo 'sqlOK';
@@ -22,6 +22,6 @@ try {
   echo json_encode(["sql error" => "{$e->getMessage()}"]);
   exit();
 }
- }
+}
 
 ?>
