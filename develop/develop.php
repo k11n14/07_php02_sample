@@ -85,6 +85,9 @@ foreach ($result as $record) {
       <div>
         一言: <input type="text" name="A_word">
       </div>
+      <!-- <div>
+        検索: <input type="text" name="search_word">
+      </div> -->
     </fieldset>
   </form>
   <div class="tweet_area"><?= $output ?></div>
