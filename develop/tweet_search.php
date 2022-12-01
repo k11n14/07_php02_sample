@@ -1,3 +1,8 @@
+<?PHP
+require_once 'function.php';
+
+Call_DB()
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -13,5 +18,6 @@
   <!-- 送信ボタンを用意する -->   
   <input type="submit" name="submit" value="送信">
 </form>
+<div class="search_result"></div>
 </body>
 </html>

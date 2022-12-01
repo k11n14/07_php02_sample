@@ -1,4 +1,5 @@
 <?php
+// データがそもそも送られてきてるか
 echo('<pre>');
 var_dump($_POST);
 echo('</pre>');
@@ -39,6 +40,7 @@ $sql = 'SELECT * FROM Date_table WHERE tweet= :word ORDER BY created_at DESC LIM
   // PDO（PHP Data Objects）=異なるデータベースでも同じ命令で操作できるようにする
 $stmt = $pdo->prepare($sql);
 
+// 直接変数を打ち込んでもエラーは出ないけど結果が帰ってこなかった。
 $stmt->bindValue(':word', $search_word, PDO::PARAM_STR);
 
 try {
