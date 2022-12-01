@@ -7,7 +7,7 @@
   <title>Document</title>
 </head>
 <body>
-  <form action="soshinsaki.php" method="post">
+  <form action="tweet_search_sever.php" method="post">
   <!-- 任意の<input>要素＝入力欄などを用意する -->
   <input type="text" name="search_word">
   <!-- 送信ボタンを用意する -->   
