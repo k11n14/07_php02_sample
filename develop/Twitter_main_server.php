@@ -35,7 +35,7 @@ $sql = 'INSERT INTO Date_table
 -- (カラム1, カラム2, ...)
 (id,user_name, tweet, created_at) 
 -- VALUES (値1, 値2, ...);
-VALUES (NULL, "hoge", :Tweet, now())';
+VALUES (NULL, "あかさん", :Tweet, now())';
 
 // ↓何やってるかわkらん
 $stmt = $pdo->prepare($sql);
@@ -54,6 +54,6 @@ try {
   echo json_encode(["sql error" => "{$e->getMessage()}"]);
   exit();
 }
-header('Location:develop.php')
+header('Location:Twitter_main.php')
 
 ?>

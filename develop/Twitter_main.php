@@ -79,7 +79,7 @@ foreach ($result as $record) {
   <link rel="stylesheet" href="./css/Twitter.css">
 </head>
 <body>
-  <form action="Twitter_server.php" method="POST">
+  <form action="Twitter_main_server.php" method="POST">
     <fieldset>
       <legend>ツイッター</legend>
       <div>
