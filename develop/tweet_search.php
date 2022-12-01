@@ -1,12 +1,12 @@
 <?php
 // データがそもそも送られてきてるか
-echo('<pre>');
-var_dump($_POST);
-echo('</pre>');
+// echo('<pre>');
+// var_dump($_POST);
+// echo('</pre>');
 
-echo('<pre>');
-var_dump($_POST["search_word"]);
-echo('</pre>');
+// echo('<pre>');
+// var_dump($_POST["search_word"]);
+// echo('</pre>');
 
 // DB接続
 $dbn ='mysql:dbname=Twitter;charset=utf8mb4;port=3306;host=localhost';
@@ -16,13 +16,13 @@ $search_word = $_POST["search_word"];
 
 
 
-echo('<pre>');
-var_dump($search_word) ;
-echo('</pre>');
+// echo('<pre>');
+// var_dump($search_word) ;
+// echo('</pre>');
 
-echo('<pre>');
-echo $search_word ;
-echo('</pre>');
+// echo('<pre>');
+// echo $search_word ;
+// echo('</pre>');
 
 // DBに接続出来ているかの確認。おk
 try{
@@ -54,14 +54,14 @@ try {
 
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$output = "";
+$search_result = "";
 
 echo('<pre>');
 var_dump($result);
 echo('</pre>');
 
 foreach ($result as $record) {
-  $output .= "
+  $search_result .= "
   <div class='Tweet_div'>
   <div>{$record["user_name"]}さん {$record["tweet"]}</div>
   <div>{$record["created_at"]}</div>
@@ -85,6 +85,6 @@ foreach ($result as $record) {
   <!-- 送信ボタンを用意する -->   
   <input type="submit" name="submit" value="送信">
 </form>
-<div class="search_result"><?= $output ?></div>
+<div class="search_result"><?= $search_result ?></div>
 </body>
 </html>
