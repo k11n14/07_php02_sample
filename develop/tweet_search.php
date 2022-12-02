@@ -56,9 +56,9 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $search_result = "";
 
-echo('<pre>');
-var_dump($result);
-echo('</pre>');
+// echo('<pre>');
+// var_dump($result);
+// echo('</pre>');
 
 foreach ($result as $record) {
   $search_result .= "
