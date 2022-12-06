@@ -58,12 +58,28 @@ $output = "";
 //     string(19) "2022-11-29 17:48:24"
 //   }
 
+// foreach ($result as $record) {
+//   $output .= "
+//   <div class='Tweet_div'>
+//   <div>{$record["user_name"]}さん {$record["tweet"]}</div>
+//   <div>{$record["created_at"]}</div>
+//   </div>
+//   ";
+// }
+
 foreach ($result as $record) {
   $output .= "
-  <div class='Tweet_div'>
-  <div>{$record["user_name"]}さん {$record["tweet"]}</div>
-  <div>{$record["created_at"]}</div>
-  </div>
+    <tr>
+      <td>{$record["user_name"]}</td>
+      <td>{$record["tweet"]}</td>
+      <td>{$record["created_at"]}</td>
+      <td>
+        <a href='edit.php?id={$record["id"]}'>edit</a>
+      </td>
+      <td>
+        <a href='delete.php?id={$record["id"]}'>delete</a>
+      </td>
+    </tr>
   ";
 }
 
