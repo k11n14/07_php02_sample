@@ -36,11 +36,14 @@ $record = $stmt->fetch(PDO::FETCH_ASSOC);
     <fieldset>
       <legend>編集</legend>
       <div>
-        一言: <input type="text" name="A_word">
+        一言: <input type="text" name="A_word" value="<?= $record['tweet'] ?>">
       </div>
-      <!-- <div>
-        検索: <input type="text" name="search_word">
-      </div> -->
+      <div>
+         <input type="text" name="id" value="<?= $record['id'] ?>">
+      </div>
+      <div>
+        <button>submit</button>
+      </div>
     </fieldset>
   </form>
 

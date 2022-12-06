@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 if(isset($_POST['user'])) {
 $dsn='mysql:dbname=Twitter;charset=utf8';
 $user='root';

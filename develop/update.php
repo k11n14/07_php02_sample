@@ -1,4 +1,7 @@
 <?php
+
+// var_dump($_POST);
+// exit('OK');
 // 入力項目のチェック
 // if (
 //   !isset($_POST['todo']) || $_POST['todo'] == '' ||
@@ -8,9 +11,10 @@
 //   exit('paramError');
 // }
 
-$tweet = $_POST['tweet'];
+$tweet = $_POST['A_word'];
 // $deadline = $_POST['deadline'];
 $id = $_POST['id'];
+
 
 
 // DB接続
@@ -24,7 +28,9 @@ $sql = 'UPDATE Date_table SET tweet=:tweet WHERE id=:id';
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue('tweet', $tweet, PDO::PARAM_STR);
 // $stmt->bindValue(':deadline', $deadline, PDO::PARAM_STR);
-// $stmt->bindValue(':id', $id, PDO::PARAM_STR);
+$stmt->bindValue(':id', $id, PDO::PARAM_STR);
+
+
 
 try {
   $status = $stmt->execute();
@@ -33,6 +39,6 @@ try {
   exit();
 }
 
-// header('Location:todo_read.php');
+header('Location:Twitter_main.php');
 exit();
 
