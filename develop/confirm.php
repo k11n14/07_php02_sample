@@ -1,11 +1,11 @@
 <?php
 if(isset($_POST['user'])) {
-$dsn='mysql:dbname=EC;charset=utf8';
+$dsn='mysql:dbname=Twitter;charset=utf8';
 $user='root';
 $password='';
 $dbh = new PDO($dsn,$user,$password);
 
-$stmt = $dbh->prepare("SELECT * FROM user WHERE id=:user");
+$stmt = $dbh->prepare("SELECT * FROM users WHERE id=:user");
 $stmt->bindParam(':user', $_POST['user']);
 $stmt->execute();
 if($rows = $stmt->fetch()) {
