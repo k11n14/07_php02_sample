@@ -1,5 +1,8 @@
 <?php
 session_start();
+$session_id = session_id();
+
+echo $session_id;
 
 if(isset($_POST['user'])) {
 $dsn='mysql:dbname=Twitter;charset=utf8';
@@ -27,7 +30,9 @@ $stmt->execute();
 <body>
 <form action="confirm.php" method="post">
 <h2>ログイン</h2>
-<p>ID;<input type="text" name="user" required></p>
+<p>ID;<input type="text" name="user" ></p>
+<!-- requiredをつけると必ず入力させられる -->
+<!-- <p>ID;<input type="text" name="user" required></p> -->
 <p>パスワード:<input type="password" name="password" required></p>
 <p><input type="submit" value="ログイン"></p>
 </form>

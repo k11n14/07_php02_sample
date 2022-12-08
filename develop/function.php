@@ -7,8 +7,8 @@ $user = 'root';
 $pwd = '';
 
 try{
-  return new PDO ($dbn,$user,$pwd);
   echo 'dbOK';
+  return new PDO ($dbn,$user,$pwd);
 } catch (PDOException $e) {
   echo json_encode(["db error" => "{$e->getMessage()}"]);
   exit();

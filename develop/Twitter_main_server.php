@@ -1,4 +1,6 @@
 <?php
+
+
 // develop.phpからデータが飛んできているか確認。
 // var_dump($_POST);
 
@@ -33,9 +35,9 @@ try{
 // INSERT INTO テーブル名
 $sql = 'INSERT INTO Date_table 
 -- (カラム1, カラム2, ...)
-(id,user_name, tweet, created_at) 
+(id,user_name,user_rank, tweet, created_at) 
 -- VALUES (値1, 値2, ...);
-VALUES (NULL, "あかさん", :Tweet, now())';
+VALUES (NULL, "あかさん",1, :Tweet, now())';
 
 // ↓何やってるかわkらん
 $stmt = $pdo->prepare($sql);

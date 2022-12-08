@@ -1,4 +1,10 @@
 <?php
+include(function.php);
+session_start();
+
+echo('<pre>');
+var_dump($_SESSION);
+echo('</pre>');
 // DB接続
 $dbn ='mysql:dbname=Twitter;charset=utf8mb4;port=3306;host=localhost';
 $user = 'root';
