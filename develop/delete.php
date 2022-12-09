@@ -25,7 +25,7 @@ try {
   exit();
 }
 
-header("Twitter_main.php");
+header('Location:Twitter_main.php');
 exit();
 
 

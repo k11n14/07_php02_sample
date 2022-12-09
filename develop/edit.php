@@ -39,7 +39,7 @@ $record = $stmt->fetch(PDO::FETCH_ASSOC);
         一言: <input type="text" name="A_word" value="<?= $record['tweet'] ?>">
       </div>
       <div>
-         <input type="text" name="id" value="<?= $record['id'] ?>">
+         <input type="hidden" type="text" name="id" value="<?= $record['id'] ?>">
       </div>
       <div>
         <button>submit</button>

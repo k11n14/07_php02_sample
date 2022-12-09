@@ -1,22 +1,27 @@
 <?php
-include(function.php);
+include("function.php");
 session_start();
+check_session_id();
+$pdo = connect_to_db();
 
-echo('<pre>');
-var_dump($_SESSION);
-echo('</pre>');
-// DB接続
-$dbn ='mysql:dbname=Twitter;charset=utf8mb4;port=3306;host=localhost';
-$user = 'root';
-$pwd = '';
-// DBに接続出来ているかの確認。おk
-try{
-  $pdo = new PDO ($dbn,$user,$pwd);
-  // echo 'dbOK';
-} catch (PDOException $e) {
-  echo json_encode(["db error" => "{$e->getMessage()}"]);
-  exit();
-}
+// echo('<pre>');
+// var_dump($_SESSION);
+// echo $_SESSION["username"];
+// echo('</pre>');
+
+
+// // DB接続
+// $dbn ='mysql:dbname=Twitter;charset=utf8mb4;port=3306;host=localhost';
+// $user = 'root';
+// $pwd = '';
+// // DBに接続出来ているかの確認。おk
+// try{
+//   $pdo = new PDO ($dbn,$user,$pwd);
+//   // echo 'dbOK';
+// } catch (PDOException $e) {
+//   echo json_encode(["db error" => "{$e->getMessage()}"]);
+//   exit();
+// }
 
 // SELECT 表示するカラム名 FROM テーブル名;
 // 「*」で全て指定
@@ -89,6 +94,73 @@ foreach ($result as $record) {
   ";
 }
 
+$search_result = "";
+if(
+  isset($_POST["search_word"])
+){
+$output = "";
+
+
+$search_word = $_POST["search_word"];
+
+
+
+// // echo('<pre>');
+// // var_dump($search_word) ;
+// // echo('</pre>');
+
+// // echo('<pre>');
+// // echo $search_word ;
+// // echo('</pre>');
+
+// // DBに接続出来ているかの確認。おk
+// try{
+//   $pdo = new PDO ($dbn,$user,$pwd);
+//   echo 'dbOK';
+// } catch (PDOException $e) {
+//   echo json_encode(["db error" => "{$e->getMessage()}"]);
+//   exit();
+// }
+// あ〜てすとだよ 	かいけつしたで！
+
+// include ("function.php");
+// $pdo=connect_to_db();
+
+// 'SELECT『参照』。*『全データ』。FROM テーブル名『テーブル名を指定』。WHERE カラム名=『完全一致』検索したいワード『検索』。ORDER BY カラム名 ASCかDESC=（昇順）（降順）『並び替え』。DESC LIMIT 数字 『表示制限』';
+// $sql = 'SELECT * FROM Date_table WHERE tweet = :word ORDER BY created_at DESC LIMIT 10';
+$sql = 'SELECT * FROM Date_table WHERE user_name LIKE :word ||tweet LIKE :word ORDER BY created_at DESC LIMIT 10';
+
+  // PDO（PHP Data Objects）=異なるデータベースでも同じ命令で操作できるようにする
+$stmt = $pdo->prepare($sql);
+
+// 直接変数を打ち込んでもエラーは出ないけど結果が帰ってこなかった。
+$stmt->bindValue(':word', "%$search_word%", PDO::PARAM_STR);
+
+try {
+  $status = $stmt->execute();
+  echo 'sqlOK';
+} catch (PDOException $e) {
+  echo json_encode(["sql error" => "{$e->getMessage()}"]);
+  exit();
+}
+
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// $search_result = "";
+
+// echo('<pre>');
+// var_dump($result);
+// echo('</pre>');
+
+foreach ($result as $record) {
+  $search_result .= "
+  <div class='Tweet_div'>
+  <div>{$record["user_name"]}さん {$record["tweet"]}</div>
+  <div>{$record["created_at"]}</div>
+  </div>
+  ";
+}
+} 
 
 ?>
 <!DOCTYPE html>
@@ -103,7 +175,7 @@ foreach ($result as $record) {
 <body>
   <form action="Twitter_main_server.php" method="POST">
     <fieldset>
-      <legend>ツイッター</legend>
+      <legend>ツイッター <?= $_SESSION["username"]?></legend>
       <div>
         一言: <input type="text" name="A_word">
       </div>
@@ -112,6 +184,15 @@ foreach ($result as $record) {
       </div> -->
     </fieldset>
   </form>
-  <div class="tweet_area"><?= $output ?></div>
+ <form action="Twitter_main.php" method="post">
+  <!-- 任意の<input>要素＝入力欄などを用意する -->
+  <input type="text" name="search_word">
+  <!-- 送信ボタンを用意する -->   
+  <input type="submit" name="submit" value="検索">
+</form>
+<div class="search_result"><?= $search_result ?></div>
+<div class="tweet_area"><?= $output ?></div>
+
+  
 </body>
 </html>
