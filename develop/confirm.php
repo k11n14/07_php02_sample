@@ -42,12 +42,16 @@ if(
 } 
 
 session_start();
-echo session_id();
+echo('<pre>');
+var_dump ($_SESSION);
+echo('</pre>');
+
 include('function.php');
 
 
 $username = $_POST['user'];
 $password = $_POST['password'];
+
 
 echo $username;
 echo $password;
@@ -85,6 +89,7 @@ if (!$val) {
 
   $_SESSION = array();
   $_SESSION['session_id'] = session_id();
+   $_SESSION['user_id'] = $val['id'];
   // $_SESSION['is_admin'] = $val['is_admin'];
   $_SESSION['username'] = $val['id'];
   $_SESSION['password'] = $val['password'];

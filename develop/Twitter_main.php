@@ -3,6 +3,7 @@ include("function.php");
 session_start();
 check_session_id();
 $pdo = connect_to_db();
+$user_id = $_SESSION['user_id'];
 
 // echo('<pre>');
 // var_dump($_SESSION);
@@ -27,7 +28,21 @@ $pdo = connect_to_db();
 // 「*」で全て指定
 // 複数カラム指定
 // SELECT カラム１, カラム２ FROM todo_table;
-$sql = 'SELECT * FROM Date_table ORDER BY created_at DESC';
+$sql = 'SELECT
+  *
+FROM
+  Date_table
+  LEFT OUTER JOIN
+    (
+      SELECT
+        todo_id,
+        COUNT(id) AS like_count
+      FROM
+        like_table
+      GROUP BY
+        todo_id
+    ) AS result_table
+  ON  Date_table.id = result_table.todo_id ORDER BY created_at DESC';
 $stmt = $pdo->prepare($sql);
 // 「WHERE」を使用して値の条件を指定できる
 // todo_tableの*『全てのデータ』WHERE『から』deadline='2021-12-31『であるデータの読み込む』
@@ -90,6 +105,8 @@ foreach ($result as $record) {
       <td>
         <a href='delete.php?id={$record["id"]}'>delete</a>
       </td>
+            <td><a href='like_create.php?user_id={$user_id}&todo_id={$record["id"]}'>like {$record["like_count"]}</a></td>
+
     </tr>
   ";
 }
@@ -157,7 +174,14 @@ foreach ($result as $record) {
   <div class='Tweet_div'>
   <div>{$record["user_name"]}さん {$record["tweet"]}</div>
   <div>{$record["created_at"]}</div>
+  <td>
+        <a href='edit.php?id={$record["id"]}'>edit</a>
+      </td>
+      <td>
+        <a href='delete.php?id={$record["id"]}'>delete</a>
+      </td>
   </div>
+  
   ";
 }
 } 
