@@ -1,6 +1,9 @@
 <?php
 include("function.php");
 session_start();
+echo ('<pre>');
+var_dump($_SESSION);
+echo ('</pre>');
 check_session_id();
 $pdo = connect_to_db();
 $user_id = $_SESSION['user_id'];
@@ -42,8 +45,11 @@ FROM
       GROUP BY
         todo_id
     ) AS result_table
-  ON  Date_table.id = result_table.todo_id ORDER BY created_at DESC';
+  ON  Date_table.id = result_table.todo_id WHERE user_name LIKE :usernamed ORDER BY created_at DESC';
+
 $stmt = $pdo->prepare($sql);
+
+$stmt->bindValue(':usernamed', "%$user_id%", PDO::PARAM_STR);
 // 「WHERE」を使用して値の条件を指定できる
 // todo_tableの*『全てのデータ』WHERE『から』deadline='2021-12-31『であるデータの読み込む』
 // SELECT * FROM todo_table WHERE deadline='2021-12-31'
@@ -105,7 +111,7 @@ foreach ($result as $record) {
       <td>
         <a href='delete.php?id={$record["id"]}'>delete</a>
       </td>
-            <td><a href='like_create.php?user_id={$user_id}&todo_id={$record["id"]}'>like {$record["like_count"]}</a></td>
+      <td><a href='like_create.php?user_id={$user_id}&todo_id={$record["id"]}'>like {$record["like_count"]}</a></td>
 
     </tr>
   ";
@@ -145,7 +151,23 @@ $search_word = $_POST["search_word"];
 
 // 'SELECT『参照』。*『全データ』。FROM テーブル名『テーブル名を指定』。WHERE カラム名=『完全一致』検索したいワード『検索』。ORDER BY カラム名 ASCかDESC=（昇順）（降順）『並び替え』。DESC LIMIT 数字 『表示制限』';
 // $sql = 'SELECT * FROM Date_table WHERE tweet = :word ORDER BY created_at DESC LIMIT 10';
-$sql = 'SELECT * FROM Date_table WHERE user_name LIKE :word ||tweet LIKE :word ORDER BY created_at DESC LIMIT 10';
+// $sql = 'SELECT * FROM Date_table WHERE user_name LIKE :word ||tweet LIKE :word ORDER BY created_at DESC LIMIT 10';
+
+$sql = 'SELECT
+  *
+FROM
+  Date_table
+  LEFT OUTER JOIN
+    (
+      SELECT
+        todo_id,
+        COUNT(id) AS like_count
+      FROM
+        like_table
+      GROUP BY
+        todo_id
+    ) AS result_table
+  ON  Date_table.id = result_table.todo_id WHERE user_name LIKE :word ||tweet LIKE :word ORDER BY created_at DESC';
 
   // PDO（PHP Data Objects）=異なるデータベースでも同じ命令で操作できるようにする
 $stmt = $pdo->prepare($sql);
@@ -180,6 +202,8 @@ foreach ($result as $record) {
       <td>
         <a href='delete.php?id={$record["id"]}'>delete</a>
       </td>
+
+      <td><a href='like_create.php?user_id={$user_id}&todo_id={$record["id"]}'>like {$record["like_count"]}</a></td>
   </div>
   
   ";
@@ -197,17 +221,30 @@ foreach ($result as $record) {
   <link rel="stylesheet" href="./css/Twitter.css">
 </head>
 <body>
-  <form action="Twitter_main_server.php" method="POST">
-    <fieldset>
-      <legend>ツイッター <?= $_SESSION["username"]?></legend>
-      <div>
-        一言: <input type="text" name="A_word">
-      </div>
-      <!-- <div>
-        検索: <input type="text" name="search_word">
-      </div> -->
-    </fieldset>
-  </form>
+  <canvas id="myCanvas" width="480" height="320"></canvas>
+  <script>
+  // JavaScript のコードはここ
+  const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+
+ctx.beginPath();
+ctx.rect(20, 40, 50, 50);
+ctx.fillStyle = "#FF0000";
+ctx.fill();
+ctx.closePath();
+</script>
+<form action="Twitter_main_server.php" method="POST">
+  <fieldset>
+    <legend>ツイッター <?= $_SESSION["username"]?></legend>
+    <div>
+      一言: <input type="text" name="A_word">
+    </div>
+    <!-- <div>
+      検索: <input type="text" name="search_word">
+    </div> -->
+  </fieldset>
+</form>
+<a href="logout.php">logout</a>
  <form action="Twitter_main.php" method="post">
   <!-- 任意の<input>要素＝入力欄などを用意する -->
   <input type="text" name="search_word">

@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('function.php');
 
 echo('<pre>');
@@ -55,5 +56,7 @@ try {
   echo json_encode(["sql error" => "{$e->getMessage()}"]);
   exit();
 }
+
+$_SESSION['like_p'] = $like_count;
 header("Location:Twitter_main.php");
 ?>
