@@ -1,23 +1,55 @@
 <?php
-// DB接続
-$dbn ='mysql:dbname=Twitter;charset=utf8mb4;port=3306;host=localhost';
-$user = 'root';
-$pwd = '';
-// DBに接続出来ているかの確認。おk
-try{
-  $pdo = new PDO ($dbn,$user,$pwd);
-  // echo 'dbOK';
-} catch (PDOException $e) {
-  echo json_encode(["db error" => "{$e->getMessage()}"]);
-  exit();
-}
+include("function.php");
+session_start();
+echo ('<pre>');
+var_dump($_SESSION);
+echo ('</pre>');
+check_session_id();
+$pdo = connect_to_db();
+$user_id = $_SESSION['user_id'];
+
+// echo('<pre>');
+// var_dump($_SESSION);
+// echo $_SESSION["username"];
+// echo('</pre>');
+
+
+// // DB接続
+// $dbn ='mysql:dbname=Twitter;charset=utf8mb4;port=3306;host=localhost';
+// $user = 'root';
+// $pwd = '';
+// // DBに接続出来ているかの確認。おk
+// try{
+//   $pdo = new PDO ($dbn,$user,$pwd);
+//   // echo 'dbOK';
+// } catch (PDOException $e) {
+//   echo json_encode(["db error" => "{$e->getMessage()}"]);
+//   exit();
+// }
 
 // SELECT 表示するカラム名 FROM テーブル名;
 // 「*」で全て指定
 // 複数カラム指定
 // SELECT カラム１, カラム２ FROM todo_table;
-$sql = 'SELECT * FROM Date_table ORDER BY created_at DESC';
+$sql = 'SELECT
+  *
+FROM
+  Date_table
+  LEFT OUTER JOIN
+    (
+      SELECT
+        todo_id,
+        COUNT(id) AS like_count
+      FROM
+        like_table
+      GROUP BY
+        todo_id
+    ) AS result_table
+  ON  Date_table.id = result_table.todo_id WHERE user_name LIKE :usernamed ORDER BY created_at DESC';
+
 $stmt = $pdo->prepare($sql);
+
+$stmt->bindValue(':usernamed', "%$user_id%", PDO::PARAM_STR);
 // 「WHERE」を使用して値の条件を指定できる
 // todo_tableの*『全てのデータ』WHERE『から』deadline='2021-12-31『であるデータの読み込む』
 // SELECT * FROM todo_table WHERE deadline='2021-12-31'
@@ -58,15 +90,125 @@ $output = "";
 //     string(19) "2022-11-29 17:48:24"
 //   }
 
+// foreach ($result as $record) {
+//   $output .= "
+//   <div class='Tweet_div'>
+//   <div>{$record["user_name"]}さん {$record["tweet"]}</div>
+//   <div>{$record["created_at"]}</div>
+//   </div>
+//   ";
+// }
+
 foreach ($result as $record) {
   $output .= "
-  <div class='Tweet_div'>
-  <div>{$record["user_name"]}さん {$record["tweet"]}</div>
-  <div>{$record["created_at"]}</div>
-  </div>
+    <tr>
+      <td>{$record["user_name"]}</td>
+      <td>{$record["tweet"]}</td>
+      <td>{$record["created_at"]}</td>
+      <td>
+        <a href='edit.php?id={$record["id"]}'>edit</a>
+      </td>
+      <td>
+        <a href='delete.php?id={$record["id"]}'>delete</a>
+      </td>
+      <td><a href='like_create.php?user_id={$user_id}&todo_id={$record["id"]}'>like {$record["like_count"]}</a></td>
+
+    </tr>
   ";
 }
 
+$search_result = "";
+if(
+  isset($_POST["search_word"])
+){
+$output = "";
+
+
+$search_word = $_POST["search_word"];
+
+
+
+// // echo('<pre>');
+// // var_dump($search_word) ;
+// // echo('</pre>');
+
+// // echo('<pre>');
+// // echo $search_word ;
+// // echo('</pre>');
+
+// // DBに接続出来ているかの確認。おk
+// try{
+//   $pdo = new PDO ($dbn,$user,$pwd);
+//   echo 'dbOK';
+// } catch (PDOException $e) {
+//   echo json_encode(["db error" => "{$e->getMessage()}"]);
+//   exit();
+// }
+// あ〜てすとだよ 	かいけつしたで！
+
+// include ("function.php");
+// $pdo=connect_to_db();
+
+// 'SELECT『参照』。*『全データ』。FROM テーブル名『テーブル名を指定』。WHERE カラム名=『完全一致』検索したいワード『検索』。ORDER BY カラム名 ASCかDESC=（昇順）（降順）『並び替え』。DESC LIMIT 数字 『表示制限』';
+// $sql = 'SELECT * FROM Date_table WHERE tweet = :word ORDER BY created_at DESC LIMIT 10';
+// $sql = 'SELECT * FROM Date_table WHERE user_name LIKE :word ||tweet LIKE :word ORDER BY created_at DESC LIMIT 10';
+
+$sql = 'SELECT
+  *
+FROM
+  Date_table
+  LEFT OUTER JOIN
+    (
+      SELECT
+        todo_id,
+        COUNT(id) AS like_count
+      FROM
+        like_table
+      GROUP BY
+        todo_id
+    ) AS result_table
+  ON  Date_table.id = result_table.todo_id WHERE user_name LIKE :word ||tweet LIKE :word ORDER BY created_at DESC';
+
+  // PDO（PHP Data Objects）=異なるデータベースでも同じ命令で操作できるようにする
+$stmt = $pdo->prepare($sql);
+
+// 直接変数を打ち込んでもエラーは出ないけど結果が帰ってこなかった。
+$stmt->bindValue(':word', "%$search_word%", PDO::PARAM_STR);
+
+try {
+  $status = $stmt->execute();
+  echo 'sqlOK';
+} catch (PDOException $e) {
+  echo json_encode(["sql error" => "{$e->getMessage()}"]);
+  exit();
+}
+
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// $search_result = "";
+
+// echo('<pre>');
+// var_dump($result);
+// echo('</pre>');
+
+foreach ($result as $record) {
+  $search_result .= "
+  <div class='Tweet_div'>
+  <div>{$record["user_name"]}さん {$record["tweet"]}</div>
+  <div>{$record["created_at"]}</div>
+  <td>
+        <a href='edit.php?id={$record["id"]}'>edit</a>
+      </td>
+      <td>
+        <a href='delete.php?id={$record["id"]}'>delete</a>
+      </td>
+
+      <td><a href='like_create.php?user_id={$user_id}&todo_id={$record["id"]}'>like {$record["like_count"]}</a></td>
+  </div>
+  
+  ";
+}
+} 
 
 ?>
 <!DOCTYPE html>
@@ -79,17 +221,39 @@ foreach ($result as $record) {
   <link rel="stylesheet" href="./css/Twitter.css">
 </head>
 <body>
-  <form action="Twitter_main_server.php" method="POST">
-    <fieldset>
-      <legend>ツイッター</legend>
-      <div>
-        一言: <input type="text" name="A_word">
-      </div>
-      <!-- <div>
-        検索: <input type="text" name="search_word">
-      </div> -->
-    </fieldset>
-  </form>
-  <div class="tweet_area"><?= $output ?></div>
+  <canvas id="myCanvas" width="480" height="320"></canvas>
+  <script>
+  // JavaScript のコードはここ
+  const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+
+ctx.beginPath();
+ctx.rect(20, 40, 50, 50);
+ctx.fillStyle = "#FF0000";
+ctx.fill();
+ctx.closePath();
+</script>
+<form action="Twitter_main_server.php" method="POST">
+  <fieldset>
+    <legend>ツイッター <?= $_SESSION["username"]?></legend>
+    <div>
+      一言: <input type="text" name="A_word">
+    </div>
+    <!-- <div>
+      検索: <input type="text" name="search_word">
+    </div> -->
+  </fieldset>
+</form>
+<a href="logout.php">logout</a>
+ <form action="Twitter_main.php" method="post">
+  <!-- 任意の<input>要素＝入力欄などを用意する -->
+  <input type="text" name="search_word">
+  <!-- 送信ボタンを用意する -->   
+  <input type="submit" name="submit" value="検索">
+</form>
+<div class="search_result"><?= $search_result ?></div>
+<div class="tweet_area"><?= $output ?></div>
+
+  
 </body>
 </html>

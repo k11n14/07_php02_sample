@@ -1,39 +1,32 @@
 <?php
-function Call_DB(){
+
+function connect_to_db()
+{
 $dbn ='mysql:dbname=Twitter;charset=utf8mb4;port=3306;host=localhost';
 $user = 'root';
 $pwd = '';
 
 try{
-  $pdo = new PDO ($dbn,$user,$pwd);
   echo 'dbOK';
+  return new PDO ($dbn,$user,$pwd);
 } catch (PDOException $e) {
   echo json_encode(["db error" => "{$e->getMessage()}"]);
   exit();
 }
 }
 
-function Cheack_sql (){
-try {
-  $status = $stmt->execute();
-  // echo 'sqlOK';
-} catch (PDOException $e) {
-  echo json_encode(["sql error" => "{$e->getMessage()}"]);
-  exit();
-}
+// functions.php
+
+function check_session_id()
+{
+  if (!isset($_SESSION["session_id"]) ||$_SESSION["session_id"] != session_id()) {
+    header('Location:main.php');
+    exit();
+  } else {
+    session_regenerate_id(true);
+    $_SESSION["session_id"] = session_id();
+  }
 }
 
-function tweet_preview (){
-  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  $output = "";
-  foreach ($result as $record) {
-  $output .= "
-  <div class='Tweet_div'>
-  <div>{$record["user_name"]}さん {$record["tweet"]}</div>
-  <div>{$record["created_at"]}</div>
-  </div>
-  ";
-
-}
 
 ?>
