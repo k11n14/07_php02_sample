@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("function.php");
-check_session_id();
+// check_session_id();
 
 
 // develop.phpからデータが飛んできているか確認。

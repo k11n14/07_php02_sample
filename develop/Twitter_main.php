@@ -4,7 +4,7 @@ session_start();
 echo ('<pre>');
 var_dump($_SESSION);
 echo ('</pre>');
-check_session_id();
+// check_session_id();
 $pdo = connect_to_db();
 $user_id = $_SESSION['user_id'];
 
